@@ -1,22 +1,23 @@
 <template>
   <div id="main">
-    <div id="first">
-      <left-tool :tools='firstData.toolList' @fromlefttool='firstlefttool'></left-tool>
+    <div id="TapPanel">
+      <tap-panel ></tap-panel>
+      <!-- <tap-panel :tools='firstData.toolList' @fromlefttool='firstlefttool'></tap-panel> -->
     </div>
-    <div id="second">
-      <user-list @changebadge='Hchangebadge' @TopParentPanel='ChildSendData' :MessSend='fromfirstData' @changename='parentchangname'></user-list>
+    <div id="UserList">
+      <user-list :recieveData='recieveData' @ShowRight='ShowRightPanel' @AddMessage='AddMessage' :userRelationShip='userRelationShip' @changename='parentchangname'></user-list>
     </div>
-    <div id="third">
-      <message :TopParent='Panel'  v-show="Messagevisi" :toolschat='thirdData.tools' @updateModel='updateMode'></message>
+    <div id="RightPanel">
+      <right-panel :RightDataMessage='Panel'  v-show="ShowRightPanelFlag" :toolschat='thirdData.tools' @updateModel='updateMode'></right-panel>
     </div>
   </div>
 </template>
 
 <script>
 
-import LeftTool from './LeftTool'
+import TapPanel from './TapPanel'
 import UserList from './UserList'
-import Message from './Message'
+import RightPanel from './RightPanel'
 import wx1 from '../assets/chat1.png'
 import wx2 from '../assets/chat2.png'
 import config from '../../Serverconfig'
@@ -24,13 +25,16 @@ export default {
   name: 'Communication',
   data () {
     return {
+      userRelationShip:[],//存关联用户的信息
+      recieveData:{},
+      Panel:{},
+
       ws:null,
       loginname:sessionStorage.getItem('loginname'),
       timerstamp:'',
-      Messagevisi:false,
+      ShowRightPanelFlag:false,
       Panel:'',//只存选择中的数据
       allheight:'',
-      fromfirstData:[],
       firstData:{
         toolList:[
             {img1:wx1,img2:wx2,imgact:true},
@@ -49,35 +53,46 @@ export default {
             {img:'https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png'},
         ],
       },
-      userlist_userid:''
+      // userlist_userid:''
     }
   },
   components:{
-    LeftTool,
+    TapPanel,
     UserList,
-    Message
+    RightPanel
   },
   methods:{
     firstlefttool(e){
-      console.log('this is from firstData')
-      
-      this.fromfirstData=e
-      console.log(this.fromfirstData)
+      this.userRelationShip=e
     },
     Hchangebadge(val){
-    console.log('在hellword页面收到处理总体数据请求')
-    console.log(val)
-      this.fromfirstData=val;
+      this.userRelationShip=val;
     },
     parentchangname(value){
       this.loginname=value
       
     },
+  AddMessage(){
+ this.userRelationShip.map(item=>{
+                if(this.recieveData.fromId==item.userid){
+                item.new=true
+                item.messtop.push(this.recieveData)
+                }
+                if(this.recieveData.toId==item.userid){
+                item.new=false
+                item.messtop.push(this.recieveData)
+                }
+                
+            })
+  },
     //选择用户名时，请求聊天记录
-ChildSendData(item){
-  this.Messagevisi=true;
-  this.userlist_userid=item.userid;
-  console.log(this.userlist_userid)
+ShowRightPanel(item){
+  // this.Messagevisi=true;
+  console.log('点击了用户',item)
+  this.ShowRightPanelFlag=true;
+  this.Panel=item
+  // this.userlist_userid=item.userid;
+
 //   this.axios({
 //   method: 'get',
 //   url: 'http://localhost:8888/getchat?userid='+item.userid,
@@ -85,101 +100,95 @@ ChildSendData(item){
 // })
 //   .then((res)=> {
 //     this.Panel=res.data
-//     console.log('this is panel data')
-//     console.log(this.Panel)
 //   }); 
 },
 
 updateMode(data,sendserver){
-  console.log('0000000000000000000')
-  this.ws.send(JSON.stringify(sendserver))
+    this.ws.send(JSON.stringify(sendserver))
 }
   },
-   watch:{
-     //监听当前点击的用户userid变化从而渲染出点击的用户聊天信息
-        userlist_userid:function(val){
-          this.fromfirstData.map(item=>{
-            if(item.userid==val){
-              this.Panel=item
-            }
-          })
-        },
-        // 'fromfirstData':{
-        //     handler:function(value,oldvalue){
-        //        console.log('fromfirstData变化了')
-        //       // 收到数据侦听到数据变化后，需要赋值给消息展示页面进行更新
-        //       //  console.log('fromid:'+sessionStorage.getItem('fromId'))
-        //       //  console.log('toId:'+sessionStorage.getItem('toId'))
-        //       // try{
-        //       //     this.fromfirstData.map(item=>{
-        //       //    console.log(item.userid+":"+sessionStorage.getItem('toId')+":"+sessionStorage.getItem('toId'))
-        //       //    if(item.userid==sessionStorage.getItem('toId')){
-        //       //       console.log(item.messtop)
-        //       this.fromfirstData.map(item=>{
-        //         if(item.userid==this.userlist_userid){
-        //           console.log('watch fromfirstData变化：')
-        //           console.log(item)
-        //           this.Panel=item
-        //         }
-        //       })
-        //       //        throw new Error('ondata')
+  //  watch:{
+  //    //监听当前点击的用户userid变化从而渲染出点击的用户聊天信息
+  //       userlist_userid:function(val){
+  //         this.userRelationShip.map(item=>{
+  //           if(item.userid==val){
+  //             this.Panel=item
+  //           }
+  //         })
+  //       },
+  //       // 'fromfirstData':{
+  //       //     handler:function(value,oldvalue){
+  //       //       // 收到数据侦听到数据变化后，需要赋值给消息展示页面进行更新
+  //       //       // try{
+  //       //       //     this.fromfirstData.map(item=>{
+  //       //       //    if(item.userid==sessionStorage.getItem('toId')){
+  //       //       this.fromfirstData.map(item=>{
+  //       //         if(item.userid==this.userlist_userid){
+  //       //           this.Panel=item
+  //       //         }
+  //       //       })
+  //       //       //        throw new Error('ondata')
 
-        //       //    }
-        //       //    else if(item.userid==sessionStorage.getItem('fromId')){
-        //       //      console.log(item.messtop)
-        //       //      this.Panel=item.messtop
-        //       //    }
-        //       //  })
-        //       // }
-        //       // catch(e){
-        //       //   if(e.message!='ondata')throw e;
-        //       // }
+  //       //       //    }
+  //       //       //    else if(item.userid==sessionStorage.getItem('fromId')){
+  //       //       //      this.Panel=item.messtop
+  //       //       //    }
+  //       //       //  })
+  //       //       // }
+  //       //       // catch(e){
+  //       //       //   if(e.message!='ondata')throw e;
+  //       //       // }
               
               
-        //     },
-        //     deep:true
-        // }
-    },
+  //       //     },
+  //       //     deep:true
+  //       // }
+    // },
   mounted(){
-this.fromfirstData=this.$route.params.userlist
-console.log(this.fromfirstData)
-this.ws = new WebSocket(`ws://${config.serverName}/communications/`+sessionStorage.getItem('USERID'))
+//查询朋友列表
+this.userRelationShip=[]
+var relationshiplist=JSON.parse(sessionStorage.getItem('userdetail')).relationship.split(',')
+relationshiplist.map(item=>{
+this.axios({
+  method: 'get',
+  url: `http://${config.serverName}/getRelationshipList?userid=${item}`,
+  responseType: 'json',
+}).then(res=>{
+res.data.new=false
+this.userRelationShip.push(res.data)
+}).catch(e=>{
+})
+})
 
+this.ws = new WebSocket(`ws://${config.serverName}/communications/`+JSON.parse(sessionStorage.getItem('userdetail')).userid)
 this.ws.onopen = function () {
-  console.log('ws已连接成功')
 }
 this.ws.onmessage = (e) =>{
-  let recieveData=JSON.parse(e.data)
-    console.log('收到ws消息')
-  console.log(recieveData)
-  this.fromfirstData.map(item=>{
-    if(recieveData.fromId==sessionStorage.getItem('USERID')&&this.userlist_userid==item.userid){//发送者收到消息
-      console.log('发送者收到消息:'+recieveData.data)
-      sessionStorage.setItem('fromId',recieveData.fromId)
-      sessionStorage.setItem('toId',recieveData.toId)
-      item.messtop.push({avater:'https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png',name:'我',userid:recieveData.fromId,content:recieveData.data})
-    }
-    else if(this.userlist_userid==item.userid){//接受者收到消息
-    console.log('接受者收到消息:'+recieveData.data)
-    sessionStorage.setItem('toId',recieveData.toId)
-     sessionStorage.setItem('fromId',recieveData.fromId)
-    item.messtop.push({avater:'https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png',name:recieveData.name,userid:recieveData.toId,content:recieveData.data})
-    }
-  })
-  // this.Panel.messtop.push({userid:e.data.userid})
-  // if(e.data.fromId==sessionStorage.getItem('USEID')){
+this.recieveData=JSON.parse(e.data)
+// console.log(this.recieveData)
 
-  // }
+// this.userRelationShip.map(item=>{
   
-
+// if(JSON.parse(sessionStorage.getItem('userdetail')).userid==recieveData.fromId){//自己发送的数据
+// if(recieveData.toId==item.userid){
+//   item.messtop.push({avater:'https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png',name:'我',userid:recieveData.fromId,content:recieveData.data})
+//   item.read=false
+//   }
+//   }
+// else{
+//   if(recieveData.fromId==item.userid){
+//   item.messtop.push({avater:'https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png',name:item.name,userid:recieveData.fromId,content:recieveData.data})
+//   item.read=true
+//   }
+// }
+// })
 }
 this.ws.onclose = function () {
-  console.log('ws已关闭')
+
 }
-    console.log(window.document.body.clientHeight)
-     document.getElementById('first').style.height=38*16;
-    document.getElementById('second').style.height =38*16;
-    document.getElementById('third').style.height =38*16;
+     document.getElementById('TapPanel').style.height=38*16;
+    document.getElementById('UserList').style.height =38*16;
+    document.getElementById('RightPanel').style.height =38*16;
   }
 }
 </script>
@@ -198,7 +207,7 @@ this.ws.onclose = function () {
   width: 100%;
   height: 100%;
 }
-#first{
+#TapPanel{
 width:10%;
 height: 38rem;
 background:black;
@@ -206,7 +215,7 @@ color:white;
 display:inline-block;
 
 }
-#second{
+#UserList{
  overflow-y:scroll;
  overflow-x:hidden;
   width:20%;
@@ -215,8 +224,8 @@ display:inline-block;
   color:black;
   display:inline-block;
 }
-#third{
-  width:70%;
+#RightPanel{
+  width:100%;
   height: 100%;
   background:white;
   color:black;

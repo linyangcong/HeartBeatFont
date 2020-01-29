@@ -31,12 +31,12 @@
 
 <script>
 export default {
-name:"LeftTool",
+name:"TapPanel",
 data(){
     return{
             }
 },
-props:['tools'],
+// props:['tools'],
 methods:{
     handleSelect(e){
     this.axios({
@@ -56,7 +56,7 @@ methods:{
         data.push(item)
       }
     })
-    this.$emit('fromlefttool',data)
+    // this.$emit('fromlefttool',data)
   }); 
     }
 }

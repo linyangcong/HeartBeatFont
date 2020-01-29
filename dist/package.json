@@ -1,0 +1,35 @@
+{
+  "name": "heartbeat",
+  "productName": "heartBeat",
+  "author": "linyc",
+  "version": "1.0.0",
+  "main": "main.js",
+  "description": "this is a chat software",
+  "scripts": {
+    "dev": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
+    "postinstall": "electron-builder install-app-deps",
+    "build": "electron-builder"
+  },
+  "build": {
+    "appId": "com.heartbeat.app",
+    "mac": {
+      "target": [
+        "dmg",
+        "zip"
+      ]
+    },
+    "win": {
+      "target": [
+        "nsis",
+        "zip"
+      ]
+    }
+  },
+  "dependencies": {
+    "core-js": "^2.4.1",
+    "electron": "^6.0.10"
+  },
+  "devDependencies": {}
+}
