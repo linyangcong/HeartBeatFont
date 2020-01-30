@@ -80,4 +80,11 @@ methods:{
 .el-menu-vertical-demo{
     background: black
 }
+
+.el-menu-item .is-active{
+padding-left: 0px !important;
+}
+.el-menu-item{
+  padding:0px !important;
+}
 </style>

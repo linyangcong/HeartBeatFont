@@ -1,14 +1,14 @@
 <template>
   <div id="main">
-    <div id="TapPanel">
+    <div id="TapPanel" v-show="!fullScreenFlag">
       <tap-panel ></tap-panel>
       <!-- <tap-panel :tools='firstData.toolList' @fromlefttool='firstlefttool'></tap-panel> -->
     </div>
-    <div id="UserList">
+    <div id="UserList" v-show="!fullScreenFlag">
       <user-list :recieveData='recieveData' @ShowRight='ShowRightPanel' @AddMessage='AddMessage' :userRelationShip='userRelationShip' @changename='parentchangname'></user-list>
     </div>
     <div id="RightPanel">
-      <right-panel :RightDataMessage='Panel'  v-show="ShowRightPanelFlag" :toolschat='thirdData.tools' @updateModel='updateMode'></right-panel>
+      <right-panel :RightDataMessage='Panel' @fullScreen='fullScreen'  v-show="ShowRightPanelFlag" :toolschat='thirdData.tools' @updateModel='updateMode'></right-panel>
     </div>
   </div>
 </template>
@@ -25,6 +25,7 @@ export default {
   name: 'Communication',
   data () {
     return {
+      fullScreenFlag:false,
       userRelationShip:[],//存关联用户的信息
       recieveData:{},
       Panel:{},
@@ -47,7 +48,7 @@ export default {
         },
       thirdData:{
         tools:[
-            {img:'https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png'},
+            {img:require('../../static/EmojisTool.png'),name:'IconTools'},
             {img:'https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png'},
             {img:'https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png'},
             {img:'https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png'},
@@ -62,6 +63,15 @@ export default {
     RightPanel
   },
   methods:{
+    fullScreen(){
+      this.fullScreenFlag=!this.fullScreenFlag;
+      if(this.fullScreen){
+        document.getElementById('RightPanel').style='width:100%';
+      }
+      else{
+        document.getElementById('RightPanel').style='width:60%';
+      }
+    },
     firstlefttool(e){
       this.userRelationShip=e
     },
@@ -208,8 +218,8 @@ this.ws.onclose = function () {
   height: 100%;
 }
 #TapPanel{
-width:10%;
-height: 38rem;
+/* width:10%; */
+/* height: 38rem; */
 background:black;
 color:white;
 display:inline-block;
@@ -218,18 +228,19 @@ display:inline-block;
 #UserList{
  overflow-y:scroll;
  overflow-x:hidden;
-  width:20%;
+  width:30%;
   height:38rem;
   background:rgb(235, 235, 235);
   color:black;
   display:inline-block;
 }
 #RightPanel{
-  width:100%;
+  width:60%;
   height: 100%;
   background:white;
   color:black;
   display:inline-block;
 }
+
 
 </style>

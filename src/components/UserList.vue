@@ -13,11 +13,12 @@
  
 <div class="user" @click="selectUser($event,k)"  v-for="(k,i) in this.userRelationShip" :key="i">
    
-    <img class="useravater" :src="config+k.avater" width="20%" height="80%" style="display:inline-block"/>
-    <div class="usermessage"   style="height:60%;display:inline-block">
+    <img :class="k.onLine!='1'?'useravaterOnfline':'useravaterOnline'" :src="config+k.avater" width="30rem" height="30rem"/>
+    <div class="usermessage" >
          <el-badge  :is-dot="k.new" class="item">
-            <div style="font-size:1rem;min-width:4rem">{{k.name}}</div>
+            <div class="username" >{{k.name}}</div>
         </el-badge>
+        <span v-show="k.onLine!='1'">未在线</span>
         <!-- <div style="font-size:0.6rem;color:grey">{{k.messtop[k.total-1].name}}：{{k.messtop[k.total-1].content}}</div> -->
     </div>
     
@@ -66,7 +67,7 @@ export default {
             // this.$emit('TopParentPanel',item)
             this.$emit('ShowRight',item)
             if(this.elementObj!=null){
-                this.elementObj.style='background:rgb(235, 235, 235)'
+                this.elementObj.style='background:rgb(255, 255, 255)'
             }
             this.elementObj=event.currentTarget
             event.currentTarget.style='cursor: default;background: rgb(220, 220, 220)'
@@ -124,26 +125,48 @@ export default {
 
 <style>
 .user{
-padding:0 5%;
+/* padding:0 5%;
 width: 100%;
-line-height: 1.8rem;
-height:8%;
+line-height: 1rem; */
+/* height:8%; */
+display: flex;
+flex-direction: row;
 background:rgb(255,255,255);
 border-bottom: 1px solid #f2f2f2;
 padding: 5px;
+align-items: center;
 }
 .user:hover{
     cursor: default;
     background: rgb(220, 220, 220)
 }
 
-.useravater{
+.useravaterOnline{
 vertical-align: middle;
 line-height: 1rem;
 border-radius: 10px;
+display:inline-block
 }
-.usermessage{
+.useravaterOnfline{
 vertical-align: middle;
 line-height: 1rem;
+border-radius: 10px;
+display:inline-block;
+opacity: 0.3
+}
+.usermessage{
+/* height:60%; */
+margin-left: 5px;
+display:flex;
+flex-direction: column;
+/* vertical-align: middle; */
+/* line-height: 1rem; */
+}
+.usermessage span{
+    font-size: 0.2rem;
+    color: #0de43c
+}
+.username{
+    font-size: 0.6rem
 }
 </style>
