@@ -18,7 +18,8 @@
          <el-badge  :is-dot="k.new" class="item">
             <div class="username" >{{k.name}}</div>
         </el-badge>
-        <span v-show="k.onLine!='1'">未在线</span>
+        <span class="offline" v-show="k.onLine=='0'">离线</span>
+        <span class="online" v-show="k.onLine=='1'">在线</span>
         <!-- <div style="font-size:0.6rem;color:grey">{{k.messtop[k.total-1].name}}：{{k.messtop[k.total-1].content}}</div> -->
     </div>
     
@@ -117,7 +118,7 @@ export default {
         // }
     },
     mounted(){
-   
+
     }
 
 }
@@ -162,11 +163,15 @@ flex-direction: column;
 /* vertical-align: middle; */
 /* line-height: 1rem; */
 }
-.usermessage span{
-    font-size: 0.2rem;
+.usermessage .online{
+    font-size: 0.5rem;
     color: #0de43c
 }
+.usermessage .offline{
+    font-size: 0.5rem;
+    color: #ff0202
+}
 .username{
-    font-size: 0.6rem
+    font-size: 0.8rem
 }
 </style>

@@ -48,6 +48,30 @@ methods:{
         
         
     }
+},
+mounted(){
+// console.log(this.$route.params.uid)
+if(this.$route.params.uid=='fromApp'&&
+this.$route.params.uid!=undefined&&
+this.$route.params.uid!=null){
+// this.$router.push('')
+// this.$router.push('')
+ console.log(this.$route.params.uid,this.$route.query.username,this.$route.query.password)
+if(this.$route.query.username!=undefined&&
+this.$route.query.username!=null&&
+this.$route.query.username!=''&&
+this.$route.query.password!=undefined&&
+this.$route.query.password!=null&&
+this.$route.query.password!=''
+){
+  this.loginname=this.$route.query.username
+  this.passworld=this.$route.query.password
+  console.log(this.$route.params.uid,this.$route.query.username,this.$route.query.password)
+this.submit()
+}
+
+
+}
 }
 }
 </script>

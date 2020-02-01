@@ -17,7 +17,7 @@ export default new Router({
       component: Communication
     },
     {
-      path: '/login',
+      path: '/login/:uid',
       name: login,
       component: login
     }
