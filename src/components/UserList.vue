@@ -13,7 +13,7 @@
  
 <div class="user" @click="selectUser($event,k)"  v-for="(k,i) in this.userRelationShip" :key="i">
    
-    <img :class="k.onLine!='1'?'useravaterOnfline':'useravaterOnline'" :src="config+k.avater" width="30rem" height="30rem"/>
+    <img :class="k.onLine!='1'?'useravaterOnfline':'useravaterOnline'" :src="config+k.avater" width="50rem" height="50rem"/>
     <div class="usermessage" >
          <el-badge  :is-dot="k.new" class="item">
             <div class="username" >{{k.name}}</div>
@@ -63,7 +63,6 @@ export default {
         selectUser(event,item){
             // this.messbadge=0;
             // this.messhidden=true;
-            console.log(item,'00')
             this.choiceUserId=item.userid
             // this.$emit('TopParentPanel',item)
             this.$emit('ShowRight',item)
@@ -164,14 +163,15 @@ flex-direction: column;
 /* line-height: 1rem; */
 }
 .usermessage .online{
-    font-size: 0.5rem;
+    font-size: 0.6rem;
     color: #0de43c
 }
 .usermessage .offline{
-    font-size: 0.5rem;
-    color: #ff0202
+    font-size: 0.6rem;
+    color: #888
 }
 .username{
-    font-size: 0.8rem
+    font-size: 0.8rem;
+    /* margin-bottom: 0.2rem */
 }
 </style>

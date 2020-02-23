@@ -1,8 +1,7 @@
 <template>
   <div >
       <div class="message_chatuser">
-          <span>{{RightDataMessage.name}}</span>
-           <i class="el-icon-full-screen" @click="fullscreen" ></i>
+          <div><i @click="goBack" class="el-icon-arrow-left" style="margin-right:0.5rem"></i><span>{{RightDataMessage.name}}</span></div>
         </div>
 
       <div id="message_showid" class="message_show" @click="showEmojiTools(0)">
@@ -135,9 +134,9 @@ export default {
         MainChat
     },
     methods:{
-        fullscreen(){
-// console.log('fullscreen')
-this.$emit('fullScreen')
+        goBack(){
+            // this.$router.go(-1)
+            this.$emit('hiddenShowUserList')
         },
         selectEmoji(key){
                 this.message=`<${key.name}>`
@@ -206,7 +205,7 @@ div.scrollTop = div.scrollHeight;
     font-size: 1rem;
     color: black;
     padding: 0.5rem;
-    margin: 0.5rem 0.5rem;
+    margin: 0.6rem 1rem;
     /* width: 100% */
 }
 .message_chatuser i:hover{
@@ -228,7 +227,7 @@ cursor: pointer;
 }
 .message_input{
     height: 5rem;
-    width: 100%;
+    width: 96%;
     font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
     background: white;
     font-size: 1rem;

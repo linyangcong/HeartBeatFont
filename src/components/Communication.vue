@@ -1,10 +1,9 @@
 <template>
   <div id="main">
-    <div id="TapPanel" v-show="!fullScreenFlag">
+    <!-- <div id="TapPanel" ">
       <tap-panel></tap-panel>
-      <!-- <tap-panel :tools='firstData.toolList' @fromlefttool='firstlefttool'></tap-panel> -->
-    </div>
-    <div id="UserList" v-show="!fullScreenFlag">
+    </div> -->
+    <div id="UserList" v-show="ShowUserList">
       <user-list
         :recieveData="recieveData"
         @ShowRight="ShowRightPanel"
@@ -13,10 +12,10 @@
         @changename="parentchangname"
       ></user-list>
     </div>
-    <div id="RightPanel">
+    <div id="RightPanel" v-show="!ShowUserList">
       <right-panel
+      @hiddenShowUserList='hiddenShowUserList'
         :RightDataMessage="Panel"
-        @fullScreen="fullScreen"
         v-show="ShowRightPanelFlag"
         :toolschat="thirdData.tools"
         @updateModel="updateMode"
@@ -26,7 +25,7 @@
 </template>
 
 <script>
-import TapPanel from "./TapPanel";
+// import TapPanel from "./TapPanel";
 import UserList from "./UserList";
 import RightPanel from "./RightPanel";
 import wx1 from "../assets/chat1.png";
@@ -36,11 +35,10 @@ export default {
   name: "Communication",
   data() {
     return {
-      fullScreenFlag: false,
       userRelationShip: [], //存关联用户的信息
       recieveData: {},
       Panel: {},
-
+      ShowUserList:true,
       ws: null,
       loginname: sessionStorage.getItem("loginname"),
       timerstamp: "",
@@ -77,19 +75,11 @@ export default {
     };
   },
   components: {
-    TapPanel,
+    // TapPanel,
     UserList,
     RightPanel
   },
   methods: {
-    fullScreen() {
-      this.fullScreenFlag = !this.fullScreenFlag;
-      if (this.fullScreen) {
-        document.getElementById("RightPanel").style = "width:100%";
-      } else {
-        document.getElementById("RightPanel").style = "width:60%";
-      }
-    },
     firstlefttool(e) {
       this.userRelationShip = e;
     },
@@ -115,6 +105,7 @@ export default {
     ShowRightPanel(item) {
       // this.Messagevisi=true;
       console.log("点击了用户", item);
+      this.ShowUserList=false;
       this.ShowRightPanelFlag = true;
       this.Panel = item;
       // this.userlist_userid=item.userid;
@@ -127,6 +118,9 @@ export default {
       //   .then((res)=> {
       //     this.Panel=res.data
       //   });
+    },
+    hiddenShowUserList(){
+      this.ShowUserList=true;
     },
 
     updateMode(data, sendserver) {
@@ -249,7 +243,7 @@ export default {
     this.ws.onerror = function(e) {
       console.log(e);
     };
-    document.getElementById("TapPanel").style.height = 38 * 16;
+    // document.getElementById("TapPanel").style.height = 38 * 16;
     document.getElementById("UserList").style.height = 38 * 16;
     document.getElementById("RightPanel").style.height = 38 * 16;
   }
@@ -270,24 +264,22 @@ export default {
   width: 100%;
   height: 100%;
 }
-#TapPanel {
-  /* width:10%; */
-  /* height: 38rem; */
+/* #TapPanel {
   background: black;
   color: white;
   display: inline-block;
-}
+} */
 #UserList {
   overflow-y: scroll;
   overflow-x: hidden;
-  width: 30%;
-  height: 38rem;
+  width: 100%;
+  min-height: 30rem;
   background: rgb(235, 235, 235);
   color: black;
   display: inline-block;
 }
 #RightPanel {
-  width: 60%;
+  width: 100%;
   height: 100%;
   background: white;
   color: black;

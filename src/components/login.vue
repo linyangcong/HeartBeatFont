@@ -1,9 +1,11 @@
 <template>
-  <div class="login">
+  <div class="rowlogin">
+    <div class="login">
     <!-- <p>{{getStoreState}}</p> -->
     <el-input class="loginForm" v-model="loginname" placeholder="请输入手机号登录"></el-input>
     <el-input class="loginForm" v-model="passworld" placeholder="请输入登录密码"></el-input>
     <el-button class="loginForm" @click="submit" type="primary">提交</el-button>
+  </div>
   </div>
 </template>
 
@@ -98,12 +100,20 @@ export default {
 </script>
 
 <style>
-.login {
-  padding-top: 10%;
+.rowlogin{
   display: flex;
   flex-direction: column;
-  width: 60%;
-  margin: auto;
+  align-items: center;
+  width: 100%;
+}
+.login {
+  /* align-content: center; */
+  /* align-self: center; */
+  display: flex;
+  flex-direction: column;
+  width: 50%
+  /* width: 60%; */
+  /* margin: auto; */
 }
 .loginForm {
   margin-top: 30px;
